@@ -3,16 +3,19 @@ import 'package:dart_application/application/config/database_connection_configur
 import 'package:dart_application/application/config/service_locator_config.dart';
 import 'package:dart_application/application/logger/i_logger.dart';
 import 'package:dart_application/application/logger/logger.dart';
+import 'package:dart_application/application/routers/router_configure.dart';
 import 'package:dotenv/dotenv.dart' show load, env;
 import 'package:get_it/get_it.dart';
+import 'package:shelf_router/shelf_router.dart';
 
 class ApplicationConfig {
 
-  Future<void> loadConfigApplication() async {
+  Future<void> loadConfigApplication(Router router) async {
     await _loadEnv();
     _loadDatabaseConfig();
     _configLogger();
     _loadDependencies();
+    _loadRoutersconfigure(router);
   }
 
   Future<void> _loadEnv() async => load();
@@ -31,6 +34,8 @@ class ApplicationConfig {
   void _configLogger() => GetIt.I.registerLazySingleton<ILogger>(() => Logger());
   
   void _loadDependencies() => configureDependencies();
+  
+  void _loadRoutersconfigure(Router router) => RouterConfigure(router).configure();
 
 }
 

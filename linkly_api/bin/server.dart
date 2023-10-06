@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:args/args.dart';
-import 'package:dart_application/application/config/aplication.config.dart';
+import 'package:dart_application/application/config/aplication_config.dart';
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as io;
 import 'package:shelf_router/shelf_router.dart';
@@ -23,10 +23,9 @@ void main(List<String> args) async {
     return;
   }
 
-  // final router = Router();
-  // router.get('/health', (shelf.Request request) => shelf.Response.ok(jsonEncode({'up': 'true'})));
+  final router = Router();
   final appConfig = ApplicationConfig();
-  await appConfig.loadConfigApplication();
+  await appConfig.loadConfigApplication(router);
 
   // // final getIt = GetIt.I;
   // // getIt.registerSingleton(appConfig);
@@ -36,14 +35,19 @@ void main(List<String> args) async {
       // .addMiddleware(DefaultContentType('application/json;charset=utf-8').handler)
       // .addMiddleware(SecurityMiddleware(getIt.get()).handler)
       .addMiddleware(shelf.logRequests())
-      .addHandler(_echoRequest);
+      .addHandler(router);
 
   final server = await io.serve(handler, _hostname, port);
   print('Serving at http://${server.address.host}:${server.port}');
 }
 
-shelf.Response _echoRequest(shelf.Request request) =>
-  shelf.Response.ok('Request for "${request.url}"');
+
+
+
+
+// shelf.Response _echoRequest(shelf.Request request) =>
+//   shelf.Response.ok('Request for "${request.url}"');
+
   // // Use any available host or container IP (usually `0.0.0.0`).
   // final ip = InternetAddress.anyIPv4;
 
