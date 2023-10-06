@@ -1,5 +1,6 @@
 
 import 'package:dart_application/application/config/database_connection_configuration.dart';
+import 'package:dart_application/application/config/service_locator_config.dart';
 import 'package:dart_application/application/logger/i_logger.dart';
 import 'package:dart_application/application/logger/logger.dart';
 import 'package:dotenv/dotenv.dart' show load, env;
@@ -11,6 +12,7 @@ class ApplicationConfig {
     await _loadEnv();
     _loadDatabaseConfig();
     _configLogger();
+    _loadDependencies();
   }
 
   Future<void> _loadEnv() async => load();
@@ -27,6 +29,8 @@ class ApplicationConfig {
   }
 
   void _configLogger() => GetIt.I.registerLazySingleton<ILogger>(() => Logger());
+  
+  void _loadDependencies() => configureDependencies();
 
 }
 
