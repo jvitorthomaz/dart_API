@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:dart_application/application/config/aplication_config.dart';
+import 'package:dart_application/application/middlewares/cors/cors_middlewares.dart';
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as io;
 import 'package:shelf_router/shelf_router.dart';
@@ -31,11 +32,13 @@ void main(List<String> args) async {
   // // getIt.registerSingleton(appConfig);
   
   final handler = const shelf.Pipeline()
+      .addMiddleware(CorsMiddlewares().handler)
+      .addMiddleware(shelf.logRequests())
+      .addHandler(router);
       // .addMiddleware(CorsMiddlewares().handler)
       // .addMiddleware(DefaultContentType('application/json;charset=utf-8').handler)
       // .addMiddleware(SecurityMiddleware(getIt.get()).handler)
-      .addMiddleware(shelf.logRequests())
-      .addHandler(router);
+      
 
   final server = await io.serve(handler, _hostname, port);
   print('Serving at http://${server.address.host}:${server.port}');
