@@ -4,6 +4,8 @@ import 'package:args/args.dart';
 import 'package:dart_application/application/config/aplication_config.dart';
 import 'package:dart_application/application/middlewares/cors/cors_middlewares.dart';
 import 'package:dart_application/application/middlewares/defaultContentType/default_content_type.dart';
+import 'package:dart_application/application/middlewares/security/security_middleware.dart';
+import 'package:get_it/get_it.dart';
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as io;
 import 'package:shelf_router/shelf_router.dart';
@@ -29,15 +31,15 @@ void main(List<String> args) async {
   final appConfig = ApplicationConfig();
   await appConfig.loadConfigApplication(router);
 
-  // // final getIt = GetIt.I;
+  final getIt = GetIt.I;
   // // getIt.registerSingleton(appConfig);
   
   final handler = const shelf.Pipeline()
       .addMiddleware(CorsMiddlewares().handler)
       .addMiddleware(DefaultContentType('application/json;charset=utf-8').handler)
+      .addMiddleware(SecurityMiddleware(log: getIt.get()).handler)
       .addMiddleware(shelf.logRequests())
       .addHandler(router);
-      // .addMiddleware(SecurityMiddleware(getIt.get()).handler)
       
 
   final server = await io.serve(handler, _hostname, port);
