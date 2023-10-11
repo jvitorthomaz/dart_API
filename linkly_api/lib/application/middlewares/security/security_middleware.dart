@@ -14,9 +14,10 @@ class SecurityMiddleware extends Midlewares {
 
   final ILogger log;
   final skypUrl = <SecuritySkipUrl>[
-    SecuritySkipUrl(url: '/hello/', method: 'GET'),
+    SecuritySkipUrl(url: '/', method: 'GET'),
+    SecuritySkipUrl(url: '/favicon.ico', method: 'GET'),
     SecuritySkipUrl(url: '/auth/register', method: 'POST'),
-    SecuritySkipUrl(url: '/auth/', method: 'POST'),
+    //SecuritySkipUrl(url: '/auth/', method: 'POST'),
     // SecuritySkipUrl(url: '/suppliers/user', method: 'GET'),
     // SecuritySkipUrl(url: '/suppliers/user', method: 'POST'),
     // SecuritySkipUrl(url: '/health', method: 'GET'),
@@ -31,7 +32,10 @@ class SecurityMiddleware extends Midlewares {
   @override
   Future<Response> execute(Request request) async{
     try {
+      print('/${request.url.path}');
+ 
       if(skypUrl.contains(SecuritySkipUrl(url: '/${request.url.path}', method: request.method))) {
+        
         return innerHandler(request);
       }
 
@@ -77,6 +81,7 @@ class SecurityMiddleware extends Midlewares {
     } on JwtException catch (e, s) {
       log.error('Erro ao validar o token JWT', e, s);
       return Response.forbidden(jsonEncode({}));
+
     } catch (e, s) {
       log.error('Internal Server Error', e, s);
       return Response.forbidden(jsonEncode({}));
