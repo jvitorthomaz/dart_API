@@ -2,6 +2,7 @@
 import 'package:dart_application/application/database/i_database_connection.dart';
 import 'package:dart_application/application/exceptions/database_exception.dart';
 import 'package:dart_application/application/exceptions/user_exists_exception.dart';
+import 'package:dart_application/application/exceptions/user_not_found_exception.dart';
 import 'package:dart_application/application/helpers/cripty_helper.dart';
 import 'package:dart_application/application/logger/i_logger.dart';
 import 'package:dart_application/entities/user.dart';
@@ -36,7 +37,10 @@ class UserRepository implements IUserRepository{
         user.socialKey
       ]);
 
+      print('result: ${result.fields}');
+
       final userId = result.insertId;
+      print('userId: ${userId}');
       return user.copyWith(id: userId, password: '');
 
     } on MySqlException catch (e, s) {
@@ -51,54 +55,53 @@ class UserRepository implements IUserRepository{
     }
   }
 
-  // @override
-  // Future<User> loginWithEmailPassword(String email, String password, bool supplierUser) async {
-  //   MySqlConnection? conn;
+  @override
+  Future<User> loginWithEmailPassword(String email, String password, bool supplierUser) async {
+    MySqlConnection? conn;
 
-  //   try {
-  //     conn = await connection.openConnection();
-  //     var query = '''
-  //       select * 
-  //       from usuario 
-  //       where 
-  //         email = ? and 
-  //         senha = ?
-  //     ''';
+    try {
+      conn = await connection.openConnection();
+      var query = '''
+        select * from usuario 
+        where email = ? and senha = ?
+      ''';
 
-  //     if (supplierUser) {
-  //       query += ' and fornecedor_id is not null';
-  //     } else {
-  //       query += ' and fornecedor_id is null';
-  //     }
+      if (supplierUser) {
+        //se for suplier
+        query += ' and fornecedor_id is not null';
+      } else {
+        query += ' and fornecedor_id is null';
+      }
 
-  //     final result = await conn.query(query, [
-  //       email,
-  //       CriptyHelper.generateSha256Hash(password),
-  //     ]);
-
-  //     if (result.isEmpty) {
-  //       log.error('usuario ou senha invalidos!!!!');
-  //       throw UserNotfoundException(message: 'Usuário ou senha inválidos');
-  //     } else {
-  //       final userSqlData = result.first;
-  //       return User(
-  //         id: userSqlData['id'] as int,
-  //         email: userSqlData['email'],
-  //         registerType: userSqlData['tipo_cadastro'],
-  //         iosToken: (userSqlData['ios_token'] as Blob?)?.toString(),
-  //         androidToken: (userSqlData['android_token'] as Blob?)?.toString(),
-  //         refreshToken: (userSqlData['refresh_token'] as Blob?)?.toString(),
-  //         imageAvatar: (userSqlData['img_avatar'] as Blob?)?.toString(),
-  //         supplierId: userSqlData['fornecedor_id']
-  //       );
-  //     }
-  //   } on MySqlException catch (e, s) {
-  //     log.error('Erro ao realizar login', e, s);
-  //     throw DatabaseException(message: e.message);
-  //   } finally {
-  //     await conn?.close();
-  //   }
-  // }
+      final result = await conn.query(query, [
+        email,
+        CriptyHelper.generateSha256Hash(password),
+       
+      ]);
+       print("email: $email\nsenha: $password");
+      if (result.isEmpty) {
+        log.error('usuario ou senha invalidos!!!!');
+        throw UserNotFoundException(message: 'Usuário ou senha inválidos');
+      } else {
+        final userSqlData = result.first;
+        return User(
+          id: userSqlData['id'] as int,
+          email: userSqlData['email'],
+          registerType: userSqlData['tipo_cadastro'],
+          iosToken: (userSqlData['ios_token'] as Blob?)?.toString(),
+          androidToken: (userSqlData['android_token'] as Blob?)?.toString(),
+          refreshToken: (userSqlData['refresh_token'] as Blob?)?.toString(),
+          imageAvatar: (userSqlData['img_avatar'] as Blob?)?.toString(),
+          supplierId: userSqlData['fornecedor_id']
+        );
+      }
+    } on MySqlException catch (e, s) {
+      log.error('Erro ao realizar login', e, s);
+      throw DatabaseException(message: e.message);
+    } finally {
+      await conn?.close();
+    }
+  }
 
   // @override
   // Future<User> loginByEmailSocialKey(String email, String socialKey, String socialType) async {

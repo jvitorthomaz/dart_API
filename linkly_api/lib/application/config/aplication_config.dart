@@ -30,6 +30,7 @@ class ApplicationConfig {
       password: env['DATABASE_PASSWORD'] ?? env['databasePassword']!, 
       databaseName: env['DATABASE_NAME'] ?? env['databaseName']!,
     );
+    print('${databaseConfig.databaseName}\n${databaseConfig.host}\n${databaseConfig.port}\n${databaseConfig.user}\n${databaseConfig.password}\n');
     GetIt.I.registerSingleton(databaseConfig);
   }
 

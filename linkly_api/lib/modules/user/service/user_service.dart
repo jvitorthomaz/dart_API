@@ -18,6 +18,7 @@ class UserService implements IUserService{
 
   @override
   Future<User> createUser(UserSaveInputModel user) {
+  //Future<User> createUserDB(UserSaveInputModel user) {
     final userEntity = User(
       email: user.email,
       password: user.password,
@@ -28,4 +29,7 @@ class UserService implements IUserService{
     return userRepository.createUser(userEntity);
   }
   
+  @override
+  Future<User> loginWithEmailPassword(String email, String password, bool supplierUser) =>
+    userRepository.loginWithEmailPassword(email, password, supplierUser);
 }

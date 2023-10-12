@@ -4,7 +4,8 @@ import 'package:dart_application/modules/user/view_models/user_save_input_model.
 
 abstract class IUserService {
   Future<User> createUser(UserSaveInputModel user);
-  // Future<User> loginWithEmailPassword(String email, String password, bool supplierUser);
+  //Future<User> createUserDB(UserSaveInputModel user);
+  Future<User> loginWithEmailPassword(String email, String password, bool supplierUser);
   // Future<User> loginWithSocial(String email, String? avatar, String socialType, String socialKey);
   // Future<String> confirmLogin(UserConfirmInputModel inputModel);
   // Future<RefreshTokenViewModel> refreshToken(UserRefreshTokenInputModel model);
