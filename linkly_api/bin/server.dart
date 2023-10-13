@@ -32,7 +32,7 @@ void main(List<String> args) async {
   await appConfig.loadConfigApplication(router);
 
   final getIt = GetIt.I;
-  // // getIt.registerSingleton(appConfig);
+  // getIt.registerSingleton(appConfig);
   
   final handler = const shelf.Pipeline()
       .addMiddleware(CorsMiddlewares().handler)

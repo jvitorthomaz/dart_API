@@ -46,7 +46,7 @@ class SecurityMiddleware extends Midlewares {
         // return Response.forbidden(jsonEncode({}));
       }
 
-      final authHeaderContent = authHeader.split('');
+      final authHeaderContent = authHeader.split(' ');
 
       if (authHeaderContent[0] != 'Bearer') {
         throw JwtException.invalidToken;

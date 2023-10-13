@@ -8,6 +8,7 @@ import 'package:dart_application/application/logger/i_logger.dart';
 import 'package:dart_application/entities/user.dart';
 import 'package:dart_application/modules/user/service/i_user_service.dart';
 import 'package:dart_application/modules/user/view_models/login_view_model.dart';
+import 'package:dart_application/modules/user/view_models/user_confirm_input_model.dart';
 import 'package:dart_application/modules/user/view_models/user_save_input_model.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shelf/shelf.dart';
@@ -40,15 +41,13 @@ class AuthController {
         );
       } 
       else {
-        user = User();
         // loginViewModel.loginSocialValidate();
-        // // Social Login (Facebook, google, apple, etc...)
-        // user = await userService.loginWithSocial(
-        //   loginViewModel.login,
-        //   loginViewModel.avatar,
-        //   loginViewModel.socialType!,
-        //   loginViewModel.socialKey!
-        // );
+        user = await userService.loginWithSocial(
+          loginViewModel.login,
+          loginViewModel.avatar,
+          loginViewModel.socialType!,
+          loginViewModel.socialKey!
+        );
       }
       print('ID: ${user.id}');
       return Response.ok( 
@@ -97,6 +96,42 @@ class AuthController {
       return Response.internalServerError();
     }
    }
+
+  /**
+   * Confirmar Login:
+   * - Registrar o device do usuario dentro do sistema (para push notifications)
+   * - Refresh token
+   * */ 
+
+  @Route('PATCH', '/confirm')
+  Future<Response> confirmLogin(Request request) async {
+    try {
+      final user = int.parse(request.headers['user']!);
+      final supplier = int.tryParse(request.headers['supplier'] ?? '');
+      final token = JwtHelper.generateJWT(user, supplier).replaceAll('Bearer ', '');
+
+      final inputModel = UserConfirmInputModel(
+        userId: user,
+        accessToken: token,
+        data: await request.readAsString(),
+      );
+      //inputModel.validateRequest();
+      final refreshToken = await userService.confirmLogin(inputModel);
+
+      return Response.ok(jsonEncode({
+        'access_token': 'Bearer $token',
+        'refresh_token': refreshToken,
+      }));
+
+    } on RequestValidationException catch (e, s) {
+      log.error('Erro parametros obrigatorios nao enviados (BadRequest)', e, s);
+      return Response(400, body: jsonEncode(e.errors));
+    } catch (e, s) {
+      log.error('Erro ao confirmar login', e, s);
+      return Response.internalServerError();
+    }
+  }
+
 
    Router get router => _$AuthControllerRouter(this);
 }

@@ -6,10 +6,10 @@ class LoginViewModel extends RequestMapping{
   late String login;
   String? password;
   late bool socialLogin;
+  String? avatar;
+  String? socialType;
+  String? socialKey;
   late bool supplierUser;
-  // String? avatar;
-  // String? socialType;
-  // String? socialKey;
 
   LoginViewModel(String dataRequest) : super(dataRequest);
 
@@ -18,10 +18,11 @@ class LoginViewModel extends RequestMapping{
     login = data['login'];
     password = data['password'];
     socialLogin = data['social_login'];
+    avatar = data['avatar'];
+    socialType = data['social_type'];
+    socialKey = data['social_key'];
     supplierUser = data['supplier_user'];
-    // avatar = data['avatar'];
-    // socialType = data['social_type'];
-    // socialKey = data['social_key'];
+
   }
 
   //   void loginEmailValidate() {
