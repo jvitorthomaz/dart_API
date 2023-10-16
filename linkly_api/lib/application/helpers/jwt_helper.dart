@@ -16,11 +16,13 @@ class JwtHelper {
       issuer: 'linkly',
       subject: userId.toString(),
       expiry: DateTime.now().add(Duration(days: 21)),  
+      //expiry: DateTime.now().add(Duration(seconds: 30)),
       //expiry: DateTime.now().add(Duration(days: expire)),
       notBefore: DateTime.now(),
       issuedAt: DateTime.now(),
       otherClaims: <String, dynamic>{'supplier': supplierId},
       maxAge: const Duration(days: 1)
+      //maxAge: const Duration(seconds: 1)
     );
 
     return 'Bearer ${issueJwtHS256(claimSet, _jwtSecret)}';
@@ -39,7 +41,7 @@ class JwtHelper {
       issuer: accessToken,
       subject: 'RefreshToken',
       expiry: DateTime.now().add(Duration(days: 21)),
-      notBefore: DateTime.now().add(Duration(hours: 1)),
+      notBefore: DateTime.now().add(Duration(hours: 36)),
       //notBefore: DateTime.now(),
       issuedAt: DateTime.now(),
       otherClaims: <String, dynamic>{},
