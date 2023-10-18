@@ -20,7 +20,7 @@ class SupplierService implements ISupplierService{
 
   @override
   Future<List<SupplierNearbyMeDTO>> findNearByMe(double lat, double lng) =>
-      repository.findNearByPosition(lat, lng, DISTANCE);
+    repository.findNearByPosition(lat, lng, DISTANCE);
 
   @override
   Future<Supplier?> findById(int id) => repository.findById(id);

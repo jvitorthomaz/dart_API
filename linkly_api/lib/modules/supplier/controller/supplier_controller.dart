@@ -44,21 +44,21 @@ class SupplierController {
 
       final suppliers = await service.findNearByMe(lat, lng);
       final result = suppliers
-          .map((s) => {
-                'id': s.id,
-                'name': s.name,
-                'logo': s.logo,
-                'distance': s.distance,
-                'category': s.categoryId,
-              })
-          .toList();
+        .map((s) => {
+          'id': s.id,
+          'name': s.name,
+          'logo': s.logo,
+          'distance': s.distance,
+          'category': s.categoryId,
+        }).toList();
 
       return Response.ok(jsonEncode(result));
+
     } catch (e, s) {
       log.error('Erro ao buscar fornecedores perto de mim', e, s);
       return Response.internalServerError(
-          body: jsonEncode(
-              {'message': 'Erro ao buscar fornecedores perto de mim'}));
+        body: jsonEncode({'message': 'Erro ao buscar fornecedores perto de mim'})
+      );
     }
   }
 

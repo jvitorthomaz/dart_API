@@ -28,14 +28,13 @@ class SupplierRepository implements ISupplierRepository{
       conn = await connection.openConnection();
       final query = ''' 
         SELECT f.id, f.nome, f.logo, f.categorias_fornecedor_id,
-          (6371 *
-            acos(
-                            cos(radians($lat)) *
-                            cos(radians(ST_X(f.latlng))) *
-                            cos(radians($lng) - radians(ST_Y(f.latlng))) +
-                            sin(radians($lat)) *
-                            sin(radians(ST_X(f.latlng)))
-                )) AS distancia
+          (6371 * acos(
+                      cos(radians($lat)) *
+                      cos(radians(ST_X(f.latlng))) *
+                      cos(radians($lng) - radians(ST_Y(f.latlng))) +
+                      sin(radians($lat)) *
+                      sin(radians(ST_X(f.latlng)))
+          )) AS distancia
             FROM fornecedor f
             HAVING distancia <= $distance
             Order by distancia;
@@ -43,15 +42,15 @@ class SupplierRepository implements ISupplierRepository{
 
       final result = await conn.query(query);
       return result
-          .map(
-            (f) => SupplierNearbyMeDTO(
-                id: f['id'],
-                name: f['nome'],
-                logo: (f['logo'] as Blob?)?.toString(),
-                distance: f['distancia'],
-                categoryId: f['categorias_fornecedor_id']),
-          )
-          .toList();
+        .map(
+          (f) => SupplierNearbyMeDTO(
+            id: f['id'],
+            name: f['nome'],
+            logo: (f['logo'] as Blob?)?.toString(),
+            distance: f['distancia'],
+            categoryId: f['categorias_fornecedor_id']
+          ),
+        ).toList();
     } on MySqlException catch (e, s) {
       log.error('Erro ao buscar fornecedores perto de mim', e, s);
       throw DatabaseException();

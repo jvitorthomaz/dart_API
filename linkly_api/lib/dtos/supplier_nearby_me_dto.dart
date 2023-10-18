@@ -1,4 +1,5 @@
 
+//DTO: Classes criadas somente para transferencia entre camadas.
 class SupplierNearbyMeDTO {
   int id;
   String name;
