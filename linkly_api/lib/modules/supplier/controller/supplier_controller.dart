@@ -73,7 +73,83 @@ class SupplierController {
 
     return Response.ok(_supplierMapper(supplier));
   }
-  
+
+  @Route.get('/<supplierId|[0-9]+>/services')
+  Future<Response> findServicesBySupplierId(Request request, String supplierId) async {
+    try {
+      final supplierServices = await service.findServicesBySupplier(int.parse(supplierId));
+
+      final result = supplierServices
+        .map((e) => {
+          'id': e.id,
+          'supplier_id': e.supplierId,
+          'name': e.name,
+          'price': e.price
+        }).toList();
+
+      return Response.ok(jsonEncode(result));
+
+    } catch (e, s) {
+      log.error('Erro ao buscar servicos', e, s);
+      return Response.internalServerError(
+        body: jsonEncode({'message': 'Erro ao buscar servicos'})
+      );
+    }
+  }
+
+  @Route.get('/user')
+  Future<Response> checkUserExists(Request request) async {
+    final email = request.url.queryParameters['email'];
+    if (email == null) {
+      return Response(400, body: jsonEncode({'message': 'E-mail obrigatório'}));
+    }
+
+    final emailExists = await service.checkUserEmailsExists(email);
+
+    return emailExists ? 
+    Response(200, body: jsonEncode({'message': 'E-mail já existe na base de dados'})) 
+    : 
+    Response(204, body: jsonEncode({'message': 'E-mail não existe na base de dados'}));
+  }
+
+  // @Route.post('/user')
+  // Future<Response> createNewUser(Request request) async {
+  //   try {
+  //     final model = CreateSupplierUserViewModel(await request.readAsString());
+  //     await service.createUserSupplier(model);
+  //     return Response.ok(jsonEncode({}));
+  //   } catch (e, s) {
+  //     log.error('Erro ao cadastrar um novo fornecedor e usuário', e, s);
+  //     return Response.internalServerError(
+  //         body: jsonEncode({
+  //       'message': 'Erro ao cadastrar um novo fornecedor e usuário',
+  //     }));
+  //   }
+  // }
+
+  // @Route.put('/')
+  // Future<Response> update(Request request) async {
+  //   try {
+  //     final supplier = int.tryParse(request.headers['supplier'] ?? '');
+      
+  //     if (supplier == null) {
+  //       return Response(400,
+  //           body: jsonEncode({'message': 'código fornecedor não pode ser nulo'}));
+  //     }
+      
+  //     final model = SupplierUpdateInputModel(
+  //         supplierId: supplier, dataRequest: await request.readAsString());
+      
+  //     final supplierResponse = await service.update(model);
+      
+  //     return Response.ok(_supplierMapper(supplierResponse));
+  //   } catch (e, s) {
+  //     log.error('Erro ao atualizar fornecedor', e, s);
+  //     return Response.internalServerError();
+  //   }
+  // }
+
+
   String _supplierMapper(Supplier supplier) {
     return jsonEncode({
       'id': supplier.id,
@@ -90,7 +166,5 @@ class SupplierController {
       },
     });
   }
-
-
    Router get router => _$SupplierControllerRouter(this);
 }

@@ -1,6 +1,7 @@
 
 import 'package:dart_application/dtos/supplier_nearby_me_dto.dart';
 import 'package:dart_application/entities/supplier.dart';
+import 'package:dart_application/entities/supplier_service.dart' as entity;
 import 'package:dart_application/modules/supplier/data/i_supplier_repository.dart';
 import 'package:dart_application/modules/supplier/service/i_supplier_service.dart';
 import 'package:dart_application/modules/user/service/i_user_service.dart';
@@ -25,13 +26,12 @@ class SupplierService implements ISupplierService{
   @override
   Future<Supplier?> findById(int id) => repository.findById(id);
 
-  // @override
-  // Future<List<entity.SupplierService>> findServicesBySupplier(int supplierId) =>
-  //     repository.findServicesBySupplierId(supplierId);
+  @override
+  Future<List<entity.SupplierService>> findServicesBySupplier(int supplierId) =>
+      repository.findServicesBySupplierId(supplierId);
 
-  // @override
-  // Future<bool> checkUserEmailsExists(String email) =>
-  //     repository.checkUserEmailExists(email);
+  @override
+  Future<bool> checkUserEmailsExists(String email) => repository.checkUserEmailExists(email);
 
   // @override
   // Future<void> createUserSupplier(CreateSupplierUserViewModel model) async {
