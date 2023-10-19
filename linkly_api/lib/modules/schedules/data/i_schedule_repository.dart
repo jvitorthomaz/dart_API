@@ -1,3 +1,3 @@
-abstract class IScheduleRepository {
+abstract class IScheduleRepository{
 
 }
