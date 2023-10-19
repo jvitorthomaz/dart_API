@@ -21,8 +21,7 @@ class SupplierRepository implements ISupplierRepository{
   });
 
   @override
-  Future<List<SupplierNearbyMeDTO>> findNearByPosition(
-      double lat, double lng, int distance) async {
+  Future<List<SupplierNearbyMeDTO>> findNearByPosition(double lat, double lng, int distance) async {
     MySqlConnection? conn;
 
     try {
@@ -42,21 +41,24 @@ class SupplierRepository implements ISupplierRepository{
       ''';
 
       final result = await conn.query(query);
-      return result
-        .map(
-          (f) => SupplierNearbyMeDTO(
-            id: f['id'],
-            name: f['nome'],
-            logo: (f['logo'] as Blob?)?.toString(),
-            distance: f['distancia'],
-            categoryId: f['categorias_fornecedor_id']
-          ),
-        ).toList();
+
+      return result.map(
+        (f) => SupplierNearbyMeDTO(
+          id: f['id'],
+          name: f['nome'],
+          logo: (f['logo'] as Blob?)?.toString(),
+          distance: f['distancia'],
+          categoryId: f['categorias_fornecedor_id']
+        )
+      ).toList();
+
     } on MySqlException catch (e, s) {
       log.error('Erro ao buscar fornecedores perto de mim', e, s);
       throw DatabaseException();
+
     } finally {
       await conn?.close();
+
     }
   }
 
@@ -75,6 +77,7 @@ class SupplierRepository implements ISupplierRepository{
         where 
           f.id = ?
       ''';
+      
       final result = await conn.query(query, [id]);
 
       if (result.isNotEmpty) {
@@ -121,18 +124,20 @@ class SupplierRepository implements ISupplierRepository{
         return [];
       }
 
-      return result
-        .map((s) => SupplierService(
-          id: s['id'],
-          supplierId: s['fornecedor_id'],
-          name: s['nome_servico'],
-          price: s['valor_servico'],
-        )).toList();
+      return result.map((s) => SupplierService(
+        id: s['id'],
+        supplierId: s['fornecedor_id'],
+        name: s['nome_servico'],
+        price: s['valor_servico'],
+      )).toList();
+
     } on MySqlException catch (e, s) {
       log.error('Erro ao buscar os servicos de um fornecedor', e, s);
       throw DatabaseException();
+
     } finally {
       await conn?.close();
+
     }
   }
 
@@ -146,11 +151,14 @@ class SupplierRepository implements ISupplierRepository{
 
       final dataMysql = result.first;
       return dataMysql[0] > 0;
+
     } on MySqlException catch (e, s) {
       log.error('Erro ao verificar se login existe', e, s);
       throw DatabaseException();
+
     } finally {
       await conn?.close();
+
     }
   }
 
@@ -173,12 +181,70 @@ class SupplierRepository implements ISupplierRepository{
       ]);
 
       return result.insertId ?? 0;
+
     } on MySqlException catch (e, s) {
       log.error('Erro ao cadastrar novo fornecedor', e, s);
       throw DatabaseException();
+
     } finally {
       await conn?.close();
+
     }
   }
 
+  @override
+  Future<Supplier> update(Supplier supplier) async {
+    MySqlConnection? conn;
+
+    try {
+      conn = await connection.openConnection();
+      await conn.query('''
+        update fornecedor
+          set
+            nome = ?,
+            logo = ?,
+            endereco = ?,
+            telefone = ?,
+            latlng = ST_GeomFromText(?),
+            categorias_fornecedor_id = ?
+        where
+          id = ?
+      ''', [
+        supplier.name,
+        supplier.logo,
+        supplier.address,
+        supplier.phone,
+        'POINT(${supplier.lat} ${supplier.lng})',
+        supplier.category?.id,
+        supplier.id
+      ]);
+
+      Category? category;
+      final categoryId = supplier.category?.id;
+      
+      if (categoryId != null) {
+        final resultCategory = await conn.query(
+          'select * from categorias_fornecedor where id = ?',
+          [categoryId]
+        );
+
+        var categoryData = resultCategory.first;
+        category = Category(
+          id: categoryData['id'],
+          name: categoryData['nome_categoria'],
+          type: categoryData['tipo_categoria'],
+        );
+      }
+
+      return supplier.copyWith(category: category);
+
+    } on MySqlException catch (e, s) {
+      log.error('Erro ao atualizar dados do fornecedor', e, s);
+      throw DatabaseException();
+
+    } finally {
+      await conn?.close();
+
+    }
+  }
 }

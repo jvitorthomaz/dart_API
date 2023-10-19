@@ -6,6 +6,7 @@ import 'package:dart_application/application/logger/i_logger.dart';
 import 'package:dart_application/entities/supplier.dart';
 import 'package:dart_application/modules/supplier/service/i_supplier_service.dart';
 import 'package:dart_application/modules/supplier/view_models/create_supplier_user_view_model.dart';
+import 'package:dart_application/modules/supplier/view_models/update_supplier__input_model.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
@@ -14,7 +15,6 @@ part 'supplier_controller.g.dart';
 
 @Injectable()
 class SupplierController {
-
   ISupplierService service;
   ILogger log;
 
@@ -22,11 +22,6 @@ class SupplierController {
     required this.service,
     required this.log,
   });
-
-  //  @Route.get('/')
-  //  Future<Response> find(Request request) async { 
-  //     return Response.ok(jsonEncode(''));
-  //  }
 
   @Route.get('/')
   Future<Response> findNearByMe(Request request) async {
@@ -41,6 +36,7 @@ class SupplierController {
             'message': 'Latitude e logitude obrigatórios',
           }),
         );
+
       }
 
       final suppliers = await service.findNearByMe(lat, lng);
@@ -60,6 +56,7 @@ class SupplierController {
       return Response.internalServerError(
         body: jsonEncode({'message': 'Erro ao buscar fornecedores perto de mim'})
       );
+
     }
   }
 
@@ -95,6 +92,7 @@ class SupplierController {
       return Response.internalServerError(
         body: jsonEncode({'message': 'Erro ao buscar servicos'})
       );
+
     }
   }
 
@@ -127,31 +125,37 @@ class SupplierController {
           {'message': 'Erro ao cadastrar um novo fornecedor e usuário',}
         )
       );
+
     }
   }
 
-  // @Route.put('/')
-  // Future<Response> update(Request request) async {
-  //   try {
-  //     final supplier = int.tryParse(request.headers['supplier'] ?? '');
+  @Route.put('/')
+  Future<Response> update(Request request) async {
+    try {
+      final supplier = int.tryParse(request.headers['supplier'] ?? '');
       
-  //     if (supplier == null) {
-  //       return Response(400,
-  //           body: jsonEncode({'message': 'código fornecedor não pode ser nulo'}));
-  //     }
+      if (supplier == null) {
+        return Response(
+          400,
+          body: jsonEncode({'message': 'código fornecedor não pode ser nulo'})
+        );
+      }
       
-  //     final model = SupplierUpdateInputModel(
-  //         supplierId: supplier, dataRequest: await request.readAsString());
+      final model = UpdateSupplierInputModel(
+        supplierId: supplier, 
+        dataRequest: await request.readAsString()
+      );
       
-  //     final supplierResponse = await service.update(model);
+      final supplierResponse = await service.update(model);
       
-  //     return Response.ok(_supplierMapper(supplierResponse));
-  //   } catch (e, s) {
-  //     log.error('Erro ao atualizar fornecedor', e, s);
-  //     return Response.internalServerError();
-  //   }
-  // }
+      return Response.ok(_supplierMapper(supplierResponse));
 
+    } catch (e, s) {
+      log.error('Erro ao atualizar fornecedor', e, s);
+      return Response.internalServerError();
+
+    }
+  }
 
   String _supplierMapper(Supplier supplier) {
     return jsonEncode({

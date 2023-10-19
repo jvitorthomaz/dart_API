@@ -6,9 +6,11 @@ import 'package:dart_application/entities/supplier_service.dart' as entity;
 import 'package:dart_application/modules/supplier/data/i_supplier_repository.dart';
 import 'package:dart_application/modules/supplier/service/i_supplier_service.dart';
 import 'package:dart_application/modules/supplier/view_models/create_supplier_user_view_model.dart';
+import 'package:dart_application/modules/supplier/view_models/update_supplier__input_model.dart';
 import 'package:dart_application/modules/user/service/i_user_service.dart';
 import 'package:dart_application/modules/user/view_models/user_save_input_model.dart';
 import 'package:injectable/injectable.dart';
+
 
 @LazySingleton(as: ISupplierService)
 class SupplierService implements ISupplierService{
@@ -54,18 +56,19 @@ class SupplierService implements ISupplierService{
     await userService.createUser(userInputModel);
   }
 
-  // @override
-  // Future<Supplier> update(UpdateSupplierInputModel model) async {
-  //   var supplier = Supplier(
-  //       id: model.supplierId,
-  //       name: model.name,
-  //       address: model.address,
-  //       lat: model.lat,
-  //       lng: model.lng,
-  //       logo: model.logo,
-  //       phone: model.phone,
-  //       category: Category(id: model.categoryId));
+  @override
+  Future<Supplier> update(UpdateSupplierInputModel model) async {
+    var supplier = Supplier(
+      id: model.supplierId,
+      name: model.name,
+      address: model.address,
+      lat: model.lat,
+      lng: model.lng,
+      logo: model.logo,
+      phone: model.phone,
+      category: Category(id: model.categoryId)
+    );
 
-  //   return await repository.update(supplier);
-  // }
+    return await repository.update(supplier);
+  }
 }
