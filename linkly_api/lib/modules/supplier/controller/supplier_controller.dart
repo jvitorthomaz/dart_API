@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:dart_application/application/logger/i_logger.dart';
 import 'package:dart_application/entities/supplier.dart';
 import 'package:dart_application/modules/supplier/service/i_supplier_service.dart';
+import 'package:dart_application/modules/supplier/view_models/create_supplier_user_view_model.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
@@ -112,20 +113,22 @@ class SupplierController {
     Response(204, body: jsonEncode({'message': 'E-mail não existe na base de dados'}));
   }
 
-  // @Route.post('/user')
-  // Future<Response> createNewUser(Request request) async {
-  //   try {
-  //     final model = CreateSupplierUserViewModel(await request.readAsString());
-  //     await service.createUserSupplier(model);
-  //     return Response.ok(jsonEncode({}));
-  //   } catch (e, s) {
-  //     log.error('Erro ao cadastrar um novo fornecedor e usuário', e, s);
-  //     return Response.internalServerError(
-  //         body: jsonEncode({
-  //       'message': 'Erro ao cadastrar um novo fornecedor e usuário',
-  //     }));
-  //   }
-  // }
+  @Route.post('/user')
+  Future<Response> createNewUser(Request request) async {
+    try {
+      final model = CreateSupplierUserViewModel(await request.readAsString());
+      await service.createUserSupplier(model);
+      return Response.ok(jsonEncode({'message': 'Cadastro realizado com sucesso',}));
+      
+    } catch (e, s) {
+      log.error('Erro ao cadastrar um novo fornecedor e usuário', e, s);
+      return Response.internalServerError(
+        body: jsonEncode(
+          {'message': 'Erro ao cadastrar um novo fornecedor e usuário',}
+        )
+      );
+    }
+  }
 
   // @Route.put('/')
   // Future<Response> update(Request request) async {

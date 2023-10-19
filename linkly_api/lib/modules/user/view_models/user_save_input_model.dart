@@ -7,8 +7,9 @@ class UserSaveInputModel extends RequestMapping {
   late String password;
   int? supplierId;
 
-  UserSaveInputModel({required this.email, required this.password, this.supplierId})
-      : super.empty();
+  UserSaveInputModel(
+    {required this.email, required this.password, this.supplierId}
+  ): super.empty();
 
   UserSaveInputModel.requestMapping(String dataRequest) : super(dataRequest);
 

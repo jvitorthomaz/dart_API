@@ -102,7 +102,7 @@ class AuthController {
    * Confirmar Login:
    * - Registrar o device do usuario dentro do sistema (para push notifications)
    * - Refresh token
-   * */ 
+  * */ 
 
   @Route('PATCH', '/confirm')
   Future<Response> confirmLogin(Request request) async {
