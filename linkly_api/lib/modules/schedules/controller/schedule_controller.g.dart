@@ -13,5 +13,25 @@ Router _$ScheduleControllerRouter(ScheduleController service) {
     r'/',
     service.find,
   );
+  router.add(
+    'POST',
+    r'/',
+    service.scheduleServices,
+  );
+  router.add(
+    'PUT',
+    r'/<scheduleId|[0-9]+>/status/<status>',
+    service.changeStatus,
+  );
+  router.add(
+    'GET',
+    r'/',
+    service.findAllSchedulesByUser,
+  );
+  router.add(
+    'GET',
+    r'/supplier',
+    service.findAllSchedulesBySupplier,
+  );
   return router;
 }
