@@ -9,11 +9,6 @@ part of 'schedule_controller.dart';
 Router _$ScheduleControllerRouter(ScheduleController service) {
   final router = Router();
   router.add(
-    'GET',
-    r'/',
-    service.find,
-  );
-  router.add(
     'POST',
     r'/',
     service.scheduleServices,

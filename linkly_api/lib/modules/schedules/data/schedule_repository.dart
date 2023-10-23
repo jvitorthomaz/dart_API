@@ -30,9 +30,7 @@ class ScheduleRepository implements IScheduleRepository{
         final result = await conn!.query('''
           insert into
             agendamento(data_agendamento, usuario_id, fornecedor_id, status, nome) 
-          values(
-            ?,?,?,?,?,?
-          )
+          values(?,?,?,?,?)
         ''', [
           schedule.scheduleDate.toIso8601String(),
           schedule.userId,
@@ -45,9 +43,11 @@ class ScheduleRepository implements IScheduleRepository{
         final scheduleId = result.insertId;
 
         if (scheduleId != null) {
-          await conn.queryMulti('''
-            insert into agendamento_servicos values(?, ?)
-          ''', schedule.services.map((s) => [scheduleId, s.service.id]));
+          await conn.queryMulti(
+            '''
+              insert into agendamento_servicos values(?, ?)
+            ''', schedule.services.map((s) => [scheduleId, s.service.id])
+          );
         }
       });
     } on MySqlException catch (e, s) {

@@ -16,6 +16,8 @@ class ScheduleService implements IScheduleService{
     required this.repository,
   });
 
+  //status: 'P' = Pendente
+
   @override
   Future<void> scheduleService(ScheduleSaveInputModel model) async {
     final schedule = Schedule(
@@ -23,12 +25,12 @@ class ScheduleService implements IScheduleService{
       name: model.name,
       // petName: model.petName,
       supplier: Supplier(id: model.supplierId),
-      status: 'P',
+      status: 'P', 
       userId: model.userId,
       services: model.services
-          .map((e) => ScheduleSupplierService(
-            service: SupplierService(id: e),
-          )).toList()
+        .map((e) => ScheduleSupplierService(
+          service: SupplierService(id: e),
+        )).toList()
     );
     await repository.save(schedule);
   }
