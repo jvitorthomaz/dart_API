@@ -52,6 +52,7 @@ class ScheduleController {
   @Route.get('/')
   Future<Response> findAllSchedulesByUser(Request request) async {
     final userId = int.parse(request.headers['user']!);
+
     try {
       final result = await service.findAllSchedulesByUser(userId);
 
@@ -69,23 +70,21 @@ class ScheduleController {
                 'logo': s.supplier.logo
               },
               'services': s.services
-                  .map((e) => {
-                    'id': e.service.id,
-                    'name': e.service.name,
-                    'price': e.service.price
-                  })
-                  .toList(),
+                .map((e) => {
+                  'id': e.service.id,
+                  'name': e.service.name,
+                  'price': e.service.price
+                }).toList(),
             },
-          )
-          .toList();
+          ).toList();
 
       return Response.ok(jsonEncode(response));
+
     } catch (e, s) {
       log.error('Erro ao buscar agendamentos do usuário [$userId]', e, s);
       return Response.internalServerError();
     }
   }
-
 
   @Route.get('/supplier')
   Future<Response> findAllSchedulesBySupplier(Request request) async {

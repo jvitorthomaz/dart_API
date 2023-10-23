@@ -104,25 +104,24 @@ class ScheduleRepository implements IScheduleRepository{
       final result = await conn.query(query, [userId]);
 
       final scheduleResultFuture = result
-          .map(
-            (s) async => Schedule(
-              id: s['id'],
-              scheduleDate: s['data_agendamento'],
-              status: s['status'],
-              name: s['nome'],
-              // petName: s['nome_pet'],
-              userId: userId,
-              supplier: Supplier(
-                id: s['fornec_id'],
-                logo: (s['logo'] as Blob?).toString(),
-                name: s['fornec_nome'],
-              ),
-              services: await findAllServicesBySchedule(s['id']),
+          .map((s) async => Schedule(
+            id: s['id'],
+            scheduleDate: s['data_agendamento'],
+            status: s['status'],
+            name: s['nome'], 
+            userId: userId,
+            supplier: Supplier(
+              id: s['fornec_id'],
+              logo: (s['logo'] as Blob?).toString(),
+              name: s['fornec_nome'],
             ),
-          )
-          .toList();
+            services: await findAllServicesBySchedule(s['id']),
 
+          ),).toList();
+
+    
       return Future.wait(scheduleResultFuture);
+
     } on MySqlException catch (e, s) {
       log.error('Erro buscar agendamentos de um usuário', e, s);
       throw DatabaseException();
@@ -131,24 +130,24 @@ class ScheduleRepository implements IScheduleRepository{
     }
   }
 
-  Future<List<ScheduleSupplierService>> findAllServicesBySchedule(
-      int scheduleId) async {
+  Future<List<ScheduleSupplierService>> findAllServicesBySchedule(int scheduleId) async {
     MySqlConnection? conn;
 
     try {
       conn = await connection.openConnection();
 
-      final result = await conn.query(''' 
-        select 
-          fs.id, fs.nome_servico, fs.valor_servico, fs.fornecedor_id
-        from agendamento_servicos as ags
-        inner join fornecedor_servicos fs on fs.id = ags.fornecedor_servicos_id
-        where ags.agendamento_id = ?
-      ''', [scheduleId]);
+      final result = await conn.query(
+        ''' 
+          select 
+            fs.id, fs.nome_servico, fs.valor_servico, fs.fornecedor_id
+          from agendamento_servicos as ags
+          inner join fornecedor_servicos fs on fs.id = ags.fornecedor_servicos_id
+          where ags.agendamento_id = ?
+        ''', [scheduleId]
+      );
 
       return result
-          .map(
-            (s) => ScheduleSupplierService(
+          .map((s) => ScheduleSupplierService(
               service: SupplierService(
                 id: s['id'],
                 name: s['nome_servico'],
