@@ -65,16 +65,18 @@ class ScheduleRepository implements IScheduleRepository{
     try {
       conn = await connection.openConnection();
       await conn.query('''
-        update 
-          agendamento set status = ?
-        where
-          id = ?
-      ''', [status, scheduleId]);
+          update agendamento set status = ?
+          where id = ?
+        ''', [status, scheduleId]
+      );
+
     } on MySqlException catch (e, s) {
       log.error('Erro ao alterar status de um agendamento', e, s);
       throw DatabaseException();
+
     } finally {
       await conn?.close();
+
     }
   }
 
@@ -176,7 +178,6 @@ class ScheduleRepository implements IScheduleRepository{
           a.data_agendamento,
           a.status,
           a.nome,
-          a.nome_pet,
           f.id as fornec_id,
           f.nome as fornec_nome,
           f.logo
@@ -196,7 +197,6 @@ class ScheduleRepository implements IScheduleRepository{
               scheduleDate: s['data_agendamento'],
               status: s['status'],
               name: s['nome'],
-              // petName: s['nome_pet'],
               userId: userId,
               supplier: Supplier(
                 id: s['fornec_id'],

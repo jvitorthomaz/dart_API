@@ -19,6 +19,7 @@ class ScheduleController {
     required this.log,
   });
     
+  //Criar agendamento
   @Route.post('/')
   Future<Response> scheduleServices(Request request) async {
     try {
@@ -44,7 +45,7 @@ class ScheduleController {
     } catch (e, s) {
       log.error('Erro ao alterar status do agendamento', e, s);
       return Response.internalServerError();
-      
+
     }
   }
 

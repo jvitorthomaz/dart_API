@@ -1,6 +1,12 @@
 
 import 'package:dart_application/entities/schedule_supplier_service.dart';
 import 'package:dart_application/entities/supplier.dart';
+/**
+ * status:
+ * P = pendente;
+ * C = confirmando pelo prestador de serviços;
+ * F = Finalizado.
+ */
 
 class Schedule {
   final int? id;
