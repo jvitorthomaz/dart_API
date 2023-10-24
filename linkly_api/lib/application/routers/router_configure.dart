@@ -1,6 +1,7 @@
 
 import 'package:dart_application/application/routers/i_router.dart';
 import 'package:dart_application/modules/categories/categories_router.dart';
+import 'package:dart_application/modules/chat/chat_router.dart';
 import 'package:dart_application/modules/schedules/schedule_router.dart';
 import 'package:dart_application/modules/supplier/supplier_router.dart';
 import 'package:dart_application/modules/user/user_router.dart';
@@ -13,6 +14,7 @@ class RouterConfigure {
     CategoriesRouter(),
     SupplierRouter(),
     ScheduleRouter(),
+    ChatRouter(),
     
   ];
 

@@ -1,0 +1,4 @@
+enum NotificationUserType {
+  user, 
+  supplier
+}
