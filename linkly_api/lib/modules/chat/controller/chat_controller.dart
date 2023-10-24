@@ -21,32 +21,35 @@ class ChatController {
 
   // /chats/schedule/1/start-chat
   @Route.post('/schedule/<scheduleId>/start-chat')
-  Future<Response> startChatByScheduleId(
-      Request request, String scheduleId) async {
+  Future<Response> startChatByScheduleId(Request request, String scheduleId) async {
     try {
       final chatId = await service.startChat(int.parse(scheduleId));
 
       return Response.ok(jsonEncode({'chat_id': chatId}));
+
     } catch (e, s) {
       log.error('Erro ao iniciar chat', e, s);
       return Response.internalServerError();
+
     }
   }
 
-  // @Route.post('/notify')
-  // Future<Response> notifyUser(Request request) async {
-  //   try {
-  //     final model = ChatNotifyViewModel(await request.readAsString());
-  //     await service.notifyChat(model);
-  //     return Response.ok(jsonEncode({}));
-  //   } catch (e) {
-  //     return Response.internalServerError(
-  //       body: jsonEncode(
-  //         {'message': 'Erro ao enviar notificação'},
-  //       ),
-  //     );
-  //   }
-  // }
+  @Route.post('/notify')
+  Future<Response> notifyUser(Request request) async {
+    try {
+      final model = ChatNotifyViewModel(await request.readAsString());
+      await service.notifyChat(model);
+      return Response.ok(jsonEncode({}));
+
+    } catch (e) {
+      return Response.internalServerError(
+        body: jsonEncode(
+          {'message': 'Erro ao enviar notificação'},
+        ),
+      );
+
+    }
+  }
 
   @Route.get('/user')
   Future<Response> findChatsByUser(Request request) async {
@@ -59,7 +62,6 @@ class ChatController {
                 'id': c.id,
                 'user': c.user,
                 'name': c.name,
-                'pet_name': c.petName,
                 'supplier': {
                   'id': c.supplier.id,
                   'name': c.supplier.name,
@@ -89,18 +91,16 @@ class ChatController {
       final chats = await service.getChatsBySupplier(supplierId);
 
       final resultChats = chats
-          .map((c) => {
-                'id': c.id,
-                'user': c.user,
-                'name': c.name,
-                'pet_name': c.petName,
-                'supplier': {
-                  'id': c.supplier.id,
-                  'name': c.supplier.name,
-                  'logo': c.supplier.logo
-                }
-              })
-          .toList();
+        .map((c) => {
+          'id': c.id,
+          'user': c.user,
+          'name': c.name,
+          'supplier': {
+            'id': c.supplier.id,
+            'name': c.supplier.name,
+            'logo': c.supplier.logo
+          }
+        }).toList();
 
       return Response.ok(jsonEncode(resultChats));
     } catch (e, s) {

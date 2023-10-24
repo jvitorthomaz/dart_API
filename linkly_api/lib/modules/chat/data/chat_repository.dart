@@ -25,19 +25,24 @@ class ChatRepository implements IChatRepository{
 
     try {
       conn = await connection.openConnection();
+
       final result = await conn.query('''
-        insert into chats(agendamento_id, status,data_criacao) values(?, ? ,?)
-      ''', [
+        insert into chats(agendamento_id, status, data_criacao) values(?, ? ,?)
+        ''', [
         scheduleId,
         'A',
         DateTime.now().toIso8601String(),
       ]);
+
       return result.insertId!;
+
     } on MySqlException catch (e, s) {
       log.error('Erro ao iniciar chat', e, s);
       throw DatabaseException();
+
     } finally {
       await conn?.close();
+
     }
   }
 
@@ -53,7 +58,6 @@ class ChatRepository implements IChatRepository{
           c.data_criacao,
           c.status,
           a.nome as agendamento_nome,
-          a.nome_pet as agendamento_nome_pet,
           a.fornecedor_id,
           a.usuario_id,
           f.nome as fornec_nome,
@@ -65,9 +69,9 @@ class ChatRepository implements IChatRepository{
         from chats as c
         inner join agendamento a on a.id = c.agendamento_id
         inner join fornecedor f on f.id = a.fornecedor_id
-        -- Dados do usuário Cliente do petshop
+        -- Dados do usuário Cliente 
         inner join usuario u on u.id = a.usuario_id
-        -- Dados do usuario fornecedor (O PETSHOP)
+        -- Dados do usuário Fornecedor de serviços
         inner join usuario uf on uf.fornecedor_id = f.id
         where c.id = ?
       ''';
@@ -80,7 +84,6 @@ class ChatRepository implements IChatRepository{
           id: resultMysql['id'],
           status: resultMysql['status'],
           name: resultMysql['agendamento_nome'],
-          petName: resultMysql['agendamento_nome_pet'],
           supplier: Supplier(
             id: resultMysql['fornecedor_id'],
             name: resultMysql['fornec_nome'],
@@ -99,8 +102,10 @@ class ChatRepository implements IChatRepository{
     } on MySqlException catch (e, s) {
       log.error('Erro ao buscar dados do chat', e, s);
       throw DatabaseException();
+
     } finally {
       await conn?.close();
+      
     }
   }
 
@@ -137,7 +142,6 @@ class ChatRepository implements IChatRepository{
                     name: c['fornec_nome'],
                     logo: (c['logo'] as Blob?)?.toString()),
                 name: c['nome'],
-                petName: c['nome_pet'],
                 status: c['status'],
               ))
           .toList();
@@ -181,7 +185,6 @@ class ChatRepository implements IChatRepository{
                     name: c['fornec_nome'],
                     logo: (c['logo'] as Blob?)?.toString()),
                 name: c['nome'],
-                petName: c['nome_pet'],
                 status: c['status'],
               ))
           .toList();

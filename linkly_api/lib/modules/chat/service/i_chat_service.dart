@@ -3,7 +3,7 @@ import 'package:dart_application/modules/chat/view_models/chat_notify_view_model
 
 abstract class IChatService {
   Future<int> startChat(int scheduleId);  
-  //Future<void> notifyChat(ChatNotifyViewModel model);
+  Future<void> notifyChat(ChatNotifyViewModel model);
   Future<List<Chat>> getChatsByUser(int user);
   Future<List<Chat>> getChatsBySupplier(int supplier);
   Future<void> endChat(int chatId);  
