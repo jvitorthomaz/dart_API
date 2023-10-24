@@ -83,6 +83,7 @@ class ScheduleController {
     } catch (e, s) {
       log.error('Erro ao buscar agendamentos do usuário [$userId]', e, s);
       return Response.internalServerError();
+      
     }
   }
 
@@ -99,24 +100,23 @@ class ScheduleController {
               'schedule_date': s.scheduleDate.toIso8601String(),
               'status': s.status,
               'name': s.name,
-              // 'pet_name': s.petName,
+              // 'obs': s.obs,
               'supplier': {
                 'id': s.supplier.id,
                 'name': s.supplier.name,
                 'logo': s.supplier.logo
               },
               'services': s.services
-                  .map((e) => {
-                        'id': e.service.id,
-                        'name': e.service.name,
-                        'price': e.service.price
-                      })
-                  .toList(),
+                .map((e) => {
+                  'id': e.service.id,
+                  'name': e.service.name,
+                  'price': e.service.price
+                }).toList(),
             },
-          )
-          .toList();
+          ).toList();
 
       return Response.ok(jsonEncode(response));
+
     } catch (e, s) {
       log.error('Erro ao buscar agendamentos do usuário fornecedor [$userId]', e, s);
       return Response.internalServerError();
