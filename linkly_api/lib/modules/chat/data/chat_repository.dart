@@ -119,7 +119,7 @@ class ChatRepository implements IChatRepository{
       final query = '''
         select 
           c.id, c.data_criacao, c.status,
-          a.nome, a.nome_pet, a.fornecedor_id, a.usuario_id, 
+          a.nome, a.fornecedor_id, a.usuario_id, 
           f.nome as fornec_nome, f.logo
         from chats as c
         inner join agendamento a on a.id = c.agendamento_id
@@ -135,21 +135,24 @@ class ChatRepository implements IChatRepository{
       final result = await conn.query(query, [user]);
       return result
           .map((c) => Chat(
-                id: c['id'],
-                user: c['usuario_id'],
-                supplier: Supplier(
-                    id: c['fornecedor_id'],
-                    name: c['fornec_nome'],
-                    logo: (c['logo'] as Blob?)?.toString()),
-                name: c['nome'],
-                status: c['status'],
-              ))
-          .toList();
+            id: c['id'],
+            user: c['usuario_id'],
+            supplier: Supplier(
+              id: c['fornecedor_id'],
+              name: c['fornec_nome'],
+              logo: (c['logo'] as Blob?)?.toString()
+            ),
+            name: c['nome'],
+            status: c['status'],
+          )).toList();
+
     } on MySqlException catch (e, s) {
       log.error('Erro ao buscar chats de um usuário', e, s);
       throw DatabaseException();
+
     } finally {
       await conn?.close();
+
     }
   }
 
@@ -162,7 +165,7 @@ class ChatRepository implements IChatRepository{
        final query = '''
         select 
           c.id, c.data_criacao, c.status,
-          a.nome, a.nome_pet, a.fornecedor_id, a.usuario_id, 
+          a.nome, a.fornecedor_id, a.usuario_id, 
           f.nome as fornec_nome, f.logo
         from chats as c
         inner join agendamento a on a.id = c.agendamento_id
@@ -178,21 +181,24 @@ class ChatRepository implements IChatRepository{
       final result = await conn.query(query, [supplier]);
       return result
           .map((c) => Chat(
-                id: c['id'],
-                user: c['usuario_id'],
-                supplier: Supplier(
-                    id: c['fornecedor_id'],
-                    name: c['fornec_nome'],
-                    logo: (c['logo'] as Blob?)?.toString()),
-                name: c['nome'],
-                status: c['status'],
-              ))
-          .toList();
+            id: c['id'],
+            user: c['usuario_id'],
+            supplier: Supplier(
+              id: c['fornecedor_id'],
+              name: c['fornec_nome'],
+              logo: (c['logo'] as Blob?)?.toString()
+            ),
+            name: c['nome'],
+            status: c['status'],
+          )).toList();
+
     } on MySqlException catch (e, s) {
       log.error('Erro ao buscar os chats do fornecedor', e, s);
       throw DatabaseException();
+
     } finally {
       await conn?.close();
+
     }
   }
 
@@ -207,11 +213,14 @@ class ChatRepository implements IChatRepository{
       ''', [
         chatId,
       ]);
+
     } on MySqlException catch (e, s) {
       log.error('Erro ao finalizar chat', e, s);
       throw DatabaseException();
+
     } finally {
       await conn?.close();
+      
     }
   }
 }

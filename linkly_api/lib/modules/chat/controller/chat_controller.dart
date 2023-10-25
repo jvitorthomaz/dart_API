@@ -83,7 +83,8 @@ class ChatController {
 
     if (supplier == null) {
       return Response(400,
-          body: jsonEncode({'message': 'Usuário logado não é um fornecedor'}));
+        body: jsonEncode({'message': 'Usuário logado não é um fornecedor'})
+      );
     }
 
     final supplierId = int.parse(supplier);
@@ -103,9 +104,11 @@ class ChatController {
         }).toList();
 
       return Response.ok(jsonEncode(resultChats));
+
     } catch (e, s) {
       log.error('Erro ao buscar os chats do fornecedor $supplierId', e, s);
       return Response.internalServerError();
+      
     }
   }
 
@@ -113,10 +116,14 @@ class ChatController {
   Future<Response> endChat(Request request, String chatId) async {
     try {
       await service.endChat(int.parse(chatId));
+
       return Response.ok(jsonEncode({}));
+
     } catch (e, s) {
       log.error('Erro ao finalizar o chat $chatId', e, s);
+
       return Response.internalServerError();
+
     }
   }
 
