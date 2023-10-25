@@ -13,7 +13,6 @@ class Schedule {
   final DateTime scheduleDate;
   final String status;
   final String name;
-  // final String petName;
   final int userId;
   final Supplier supplier;
   final List<ScheduleSupplierService> services;
@@ -23,7 +22,6 @@ class Schedule {
     required this.scheduleDate,
     required this.status,
     required this.name,
-    // required this.petName,
     required this.userId,
     required this.supplier,
     required this.services,

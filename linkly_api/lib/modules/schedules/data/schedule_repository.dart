@@ -37,7 +37,6 @@ class ScheduleRepository implements IScheduleRepository{
           schedule.supplier.id,
           schedule.status,
           schedule.name,
-          // schedule.petName
         ]);
 
         final scheduleId = result.insertId;

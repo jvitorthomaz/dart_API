@@ -82,7 +82,8 @@ class ChatController {
     final supplier = request.headers['supplier'];
 
     if (supplier == null) {
-      return Response(400,
+      return Response(
+        400,
         body: jsonEncode({'message': 'Usuário logado não é um fornecedor'})
       );
     }

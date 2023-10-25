@@ -31,9 +31,11 @@ class CategoriesRepository implements ICategoriesRepository{
           name: e['nome_categoria'],
           type: e['tipo_categoria']
         )).toList();
+        
       }
 
       return [];
+
     } on MySqlException catch (e, s) {
       log.error('Erro ao buscar as categorias do fornecedor', e, s);
       throw DatabaseException();

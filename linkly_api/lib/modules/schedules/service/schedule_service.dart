@@ -23,7 +23,6 @@ class ScheduleService implements IScheduleService{
     final schedule = Schedule(
       scheduleDate: model.scheduleDate,
       name: model.name,
-      // petName: model.petName,
       supplier: Supplier(id: model.supplierId),
       status: 'P', 
       userId: model.userId,

@@ -63,7 +63,6 @@ class ScheduleController {
               'schedule_date': s.scheduleDate.toIso8601String(),
               'status': s.status,
               'name': s.name,
-              // 'pet_name': s.petName,
               'supplier': {
                 'id': s.supplier.id,
                 'name': s.supplier.name,
@@ -100,7 +99,6 @@ class ScheduleController {
               'schedule_date': s.scheduleDate.toIso8601String(),
               'status': s.status,
               'name': s.name,
-              // 'obs': s.obs,
               'supplier': {
                 'id': s.supplier.id,
                 'name': s.supplier.name,

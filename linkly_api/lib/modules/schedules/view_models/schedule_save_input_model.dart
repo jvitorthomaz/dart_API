@@ -5,7 +5,6 @@ class ScheduleSaveInputModel extends RequestMapping{
   int userId;
   late DateTime scheduleDate;
   late String name;
-  //late String petName;
   late int supplierId;
   late List<int> services;
 
@@ -18,7 +17,6 @@ class ScheduleSaveInputModel extends RequestMapping{
     supplierId = data['supplier_id'];
     services = List.castFrom<dynamic, int>(data['services']);
     name = data['name'];
-    //petName = data['pet_name'];
   }
   
 }
